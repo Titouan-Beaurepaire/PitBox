@@ -1,0 +1,9 @@
+.env
+server/.venv/
+server/data/
+__pycache__/
+web/node_modules/
+web/.next/
+web/next-env.d.ts
+*.tsbuildinfo
+sauvegardes/

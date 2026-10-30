@@ -1,0 +1,15 @@
+# PITBOX_ADRESSE = ":80" (HTTP sur l'IP) ou "51-75-12-34.sslip.io" (HTTPS automatique, voir README)
+{$PITBOX_ADRESSE::80} {
+	encode gzip
+
+	# la R4 (avec son jeton) et l'API du dashboard
+	handle /ws/* {
+		reverse_proxy server:8000
+	}
+	handle /api/* {
+		reverse_proxy server:8000
+	}
+	handle {
+		reverse_proxy web:3000
+	}
+}
