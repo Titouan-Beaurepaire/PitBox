@@ -1,0 +1,34 @@
+services:
+  server:
+    build: ./server
+    environment:
+      PITBOX_TOKEN: ${PITBOX_TOKEN:?définir PITBOX_TOKEN dans le fichier .env}
+      PITBOX_SAUVEGARDE_HEURES: ${PITBOX_SAUVEGARDE_HEURES:-6}
+      PITBOX_SAUVEGARDE_GARDER: ${PITBOX_SAUVEGARDE_GARDER:-40}
+    volumes:
+      - donnees:/data
+      - ./sauvegardes:/sauvegardes   # copies de la base, lisibles directement sur le VPS
+    restart: unless-stopped
+
+  web:
+    build: ./web
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2.10
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      PITBOX_ADRESSE: ${PITBOX_ADRESSE:-:80}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [server, web]
+    restart: unless-stopped
+
+volumes:
+  donnees:
+  caddy_data:
+  caddy_config:
